@@ -22,6 +22,12 @@ var calculations = 0;
 *   Work done: Added replaceAll() to list assignment to look for \n in input string and replace with ',' to split and add.
 */
 
+/* Step 4:
+*   Deny negative numbers by throwing an exception that includes all of the negative numbers provided
+*   Work done: Added a new list, negativeNumber. Any negative numbers will be pushed into negativeNumber and if negativeNumber.length > 0
+*              will display in UI of all negative numbers excluded from the inputted string.
+*/
+
 class App extends React.Component {
 
   constructor(props) { //constructor to initialize stats and input
@@ -34,13 +40,24 @@ class App extends React.Component {
 
     const list = value.replaceAll("\\n", ",").split(","); // Simple replaceAll() for any \n to be replaced to ',' and split on ','
     calculations = 0;
-
+    const negativeNumber =[];
     for (var i = 0; i < list.length; i++) {
       if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i])) { // simple value check and conversion to 0 if value does not meet req.
         calculations += 0;
       } else {
-        calculations += parseInt(list[i]);
+        if(parseInt(list[i]) > 0) {
+          calculations += parseInt(list[i]);
+        } else {
+          negativeNumber.push(parseInt(list[i]))
+        }
       }
+    }
+
+    if(negativeNumber.length > 0){
+      this.setState({ showErrMsg: true }); //Error Msg  hide state
+      this.setState({negativeNumbers: negativeNumber}) //Stores negative numbers for display on UI
+    } else {
+      this.setState({ showErrMsg: false }); //Error Msg  hide state
     }
 
     const finalCalc = calculations;
@@ -71,6 +88,15 @@ class App extends React.Component {
                   <label htmlFor="output" >Output</label>
                 </div>
                 <input id="output" value={finalCalc} placeholder="0" disabled />
+              </div>
+              {/*Error message handling to show or hide based if state condition is met*/}
+              <div className="form-group row" >
+                <div className="col-lg-2"></div>
+                <div  className="col-lg-3">
+                  <label htmlFor="negative" style={{ display: (this.state.showErrMsg ? 'inline-block' : 'none') }}>Negative #'s</label>
+                </div>
+                {/*Displays all negative numbers in an excluded list if any are available*/}
+                <input id="negative" style={{ display: (this.state.showErrMsg ? 'inline-block' : 'none') }} value={this.state.negativeNumbers} disabled/>
               </div>
             </div>
 
