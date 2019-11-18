@@ -34,6 +34,15 @@ var calculations = 0;
 *              The value is this compared against the inputted the list index
 */
 
+/* Step 6:
+*   Support 1 custom delimiter of a single character using the format: //{delimiter}\n{numbers}
+*       examples: //#\n2#5 will return 7; //,\n2,ff,100 will return 102
+*       all previous formats should also be supported
+*   work done: Added a string checker for first call on setting delimeter, after which I validate whether the user input a length of 1
+*              custom delimeter, this will pass or fail depending on the check. If it fails the user is
+*              presented with an error message displaying why it failed and the proper way to input.
+*/
+
 class App extends React.Component {
 
   constructor(props) { //constructor to initialize stats and input
@@ -41,35 +50,85 @@ class App extends React.Component {
     this.myInput = React.createRef();
     this.state = {}
   }
-  onChangeValue = () => {
+  onChangeValue = async () => {
     const value = this.myInput.current.value.trim();
 
-    const list = value.replaceAll("\\n", ",").split(","); // Simple replaceAll() for any \n to be replaced to ',' and split on ','
-    calculations = 0;
-    const maxNumAllowed = 1000;
-    const negativeNumber =[];
-    for (var i = 0; i < list.length; i++) {
-      if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i]) || parseInt(list[i]) > maxNumAllowed) { // simple value check and conversion to 0 if value does not meet req.
-        calculations += 0;
+    await new Promise(resolve => this.setState({delimErrMsg: false}, () => resolve()))
+
+    let delimList = [], delimString = null;
+    if (value.startsWith("//")) {
+
+      delimString = value[2]
+      if (value[3] === ",") {
+        delimList.push(delimString);
+        await new Promise(resolve => this.setState({delimErrMsg: false}, () => resolve()))
       } else {
-        if(parseInt(list[i]) > 0) {
-          calculations += parseInt(list[i]);
+        await new Promise(resolve => this.setState({delimErrMsg: true}, () => resolve()))
+      }
+      console.log("delimList: " + delimList);
+    }
+    var delimCounts = {}, delimCharAt, index, delimVal, delimCount;
+
+    for (let element in delimList) {
+      delimVal = delimList[element]
+      if (/\W/.test(delimVal)) {
+        console.log(delimVal)
+        if (delimVal.length > 1) {
+          for (index = 0; index < delimVal.length; index++) {
+            if (delimVal.charAt(index + 1) === delimVal.charAt(index) || delimVal.charAt(index - 1) === delimVal.charAt(index)) {
+              delimCharAt = delimVal.charAt(index);
+              delimCount = delimCounts[delimCharAt];
+              delimCounts[delimCharAt] = delimCount ? delimCount + 1 : 1;
+              console.log(delimCounts);
+            }
+          }
+          delimList[element] = "\\" + delimCharAt + "{" + delimCounts[delimCharAt] + "}";
         } else {
-          negativeNumber.push(parseInt(list[i]))
+          delimList[element] = "\\" + delimList[element];
+        }
+      }
+
+    }
+    console.log(delimList);
+
+    var regex = new RegExp(delimList.join('|') + '|,|\\\\n', 'g')
+
+    const list = value.split(regex);
+    calculations = 0;
+    let delimErrMsg = this.state.delimErrMsg;
+    const maxNumAllowed = 1000;
+    const negativeNumber = [];
+    if (!delimErrMsg) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i]) || parseInt(list[i]) > maxNumAllowed) { // simple value check and conversion to 0 if value does not meet req.
+          calculations += 0;
+        } else {
+          if (parseInt(list[i]) > 0) {
+            calculations += parseInt(list[i]);
+          } else {
+            negativeNumber.push(parseInt(list[i]))
+          }
         }
       }
     }
 
-    if(negativeNumber.length > 0){
-      this.setState({ showErrMsg: true }); //Error Msg  hide state
+    if (negativeNumber.length > 0) {
+      this.setState({showErrMsg: true}); //Error Msg  hide state
       this.setState({negativeNumbers: negativeNumber}) //Stores negative numbers for display on UI
     } else {
-      this.setState({ showErrMsg: false }); //Error Msg  hide state
+      this.setState({showErrMsg: false}); //Error Msg  hide state
     }
+
 
     const finalCalc = calculations;
     this.setState({finalCalc});
   };
+
+  setDelimList = async (value) => {
+
+  };
+
+
 
   render() {
     let {finalCalc} = this.state;
@@ -87,6 +146,14 @@ class App extends React.Component {
                 </div>
                 <input ref={this.myInput} id="add" placeholder="" />
                 <button className="calculate btn btn-primary" type="submit" onClick={this.onChangeValue}><span>Calculate</span></button>
+              </div>
+              {/*Error message handling to show or hide based if state condition is met*/}
+              <div className="form-group row" style={{display: (this.state.delimErrMsg ? 'inline-block' : 'none') , color: 'red' }}>
+                <div>
+                  <span>
+                    More than one Custom Delimiter was set, please only put 1 Custom Delimeter! i.e //#,1#2,3 = 6
+                  </span>
+                </div>
               </div>
 
               <div className="form-group row">
