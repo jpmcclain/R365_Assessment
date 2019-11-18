@@ -12,6 +12,11 @@ var calculations = 0;
 *      invalid numbers should be converted to 0 e.g. 5,tytyt will return 5
 */
 
+/* Step 2:
+*   Remove the maximum constraint for numbers e.g. 1,2,3,4,5,6,7,8,9,10,11,12 will return 78
+*   Work done: Removed this.setState({ showErrMsg }), length check and error message handling from Step 1. Kept value check from Step 1 to convert to 0 if req not met.
+*/
+
 class App extends React.Component {
 
   constructor(props) { //constructor to initialize stats and input
@@ -24,7 +29,6 @@ class App extends React.Component {
 
     const list = value.split(','); // Simple replaceAll() for any \n to be replaced to ',' and split on ','
     calculations = 0;
-    if(list.length <= 2) {
       this.setState({ showErrMsg: false }); //Error Msg  hide state
       for (var i = 0; i < list.length; i++) {
         if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i])) { // simple value check and conversion to 0 if value does not meet req.
@@ -33,9 +37,7 @@ class App extends React.Component {
           calculations += parseInt(list[i]);
         }
       }
-    } else {
-      this.setState({ showErrMsg: true }); //Error Msg  hide state
-    }
+
 
     const finalCalc = calculations;
     this.setState({finalCalc});
@@ -66,11 +68,6 @@ class App extends React.Component {
                 </div>
                 <input id="output" value={finalCalc} placeholder="0" disabled />
               </div>
-            </div>
-
-            {/*Error message handling to show or hide based if state condition is met*/}
-            <div className="form-group row" style={{ display: (this.state.showErrMsg ? 'block' : 'none') }}>
-              <p>Cannot input more than 2 comma delimited values!</p>
             </div>
 
           </div>
