@@ -137,10 +137,12 @@ class App extends React.Component {
       } else {
         if (parseInt(list[i]) > 0) {
           calculations += parseInt(list[i]);
-          if(i === 0){
+          if(i === 0 ){
             formula += parseInt(list[i]);
-          } else {
+          } else if (formula.length > 0){
             formula += " + " + parseInt(list[i]);
+          } else {
+            formula += parseInt(list[i]);
           }
         } else {
           negativeNumber.push(parseInt(list[i]))
