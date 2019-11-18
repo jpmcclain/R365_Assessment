@@ -43,6 +43,14 @@ var calculations = 0;
 *              presented with an error message displaying why it failed and the proper way to input.
 */
 
+/* Step 7:
+*   Support 1 custom delimiter of any length using the format: //[{delimiter}]\n{numbers}
+*       example: //[***]\n11***22***33 will return 66
+*       all previous formats should also be supported
+*   work done: Applied additional check from proper user input on allowing only one custom delimiter of any length. Error message will display if more
+*              than one delimiter is inputted.
+*/
+
 class App extends React.Component {
 
   constructor(props) { //constructor to initialize stats and input
@@ -57,15 +65,24 @@ class App extends React.Component {
 
     let delimList = [], delimString = null;
     if (value.startsWith("//")) {
-
-      delimString = value[2]
-      if (value[3] === ",") {
-        delimList.push(delimString);
-        await new Promise(resolve => this.setState({delimErrMsg: false}, () => resolve()))
-      } else {
-        await new Promise(resolve => this.setState({delimErrMsg: true}, () => resolve()))
-      }
-      console.log("delimList: " + delimList);
+        var indexA = value.indexOf("[");
+        if (indexA > -1) {
+            var indexB = value.indexOf("]");
+            var indexC = value.lastIndexOf("]");
+            if (indexB === indexC) {
+                delimString = value.substr(indexA, indexB - 1);
+                var i = 0;
+                while(i < delimString.length) {
+                    delimList.push(delimString.substr(delimString.indexOf("[")+1, delimString.indexOf("]")-1));
+                    delimString = delimString.slice(delimString.indexOf("]")+1, delimString.length);
+                    i++;
+                }
+                await new Promise(resolve => this.setState({delimErrMsg: false}, () => resolve()))
+            } else {
+                await new Promise(resolve => this.setState({delimErrMsg: true}, () => resolve()))
+            }
+            console.log("delimList: " + delimList);
+        }
     }
     var delimCounts = {}, delimCharAt, index, delimVal, delimCount;
 
@@ -119,16 +136,9 @@ class App extends React.Component {
       this.setState({showErrMsg: false}); //Error Msg  hide state
     }
 
-
     const finalCalc = calculations;
     this.setState({finalCalc});
   };
-
-  setDelimList = async (value) => {
-
-  };
-
-
 
   render() {
     let {finalCalc} = this.state;
@@ -151,7 +161,7 @@ class App extends React.Component {
               <div className="form-group row" style={{display: (this.state.delimErrMsg ? 'inline-block' : 'none') , color: 'red' }}>
                 <div>
                   <span>
-                    More than one Custom Delimiter was set, please only put 1 Custom Delimeter! i.e //#,1#2,3 = 6
+                    More than one Custom Delimiter was set, please only put 1 Custom Delimeter! i.e //[###]\n,1###2,3 = 6
                   </span>
                 </div>
               </div>
