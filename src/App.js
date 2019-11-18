@@ -17,6 +17,11 @@ var calculations = 0;
 *   Work done: Removed this.setState({ showErrMsg }), length check and error message handling from Step 1. Kept value check from Step 1 to convert to 0 if req not met.
 */
 
+/* Step 3:
+*   Support a newline character as an alternative delimiter e.g. 1\n2,3 will return 6
+*   Work done: Added replaceAll() to list assignment to look for \n in input string and replace with ',' to split and add.
+*/
+
 class App extends React.Component {
 
   constructor(props) { //constructor to initialize stats and input
@@ -27,17 +32,16 @@ class App extends React.Component {
   onChangeValue = () => {
     const value = this.myInput.current.value.trim();
 
-    const list = value.split(','); // Simple replaceAll() for any \n to be replaced to ',' and split on ','
+    const list = value.replaceAll("\\n", ",").split(","); // Simple replaceAll() for any \n to be replaced to ',' and split on ','
     calculations = 0;
-      this.setState({ showErrMsg: false }); //Error Msg  hide state
-      for (var i = 0; i < list.length; i++) {
-        if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i])) { // simple value check and conversion to 0 if value does not meet req.
-          calculations += 0;
-        } else {
-          calculations += parseInt(list[i]);
-        }
-      }
 
+    for (var i = 0; i < list.length; i++) {
+      if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i])) { // simple value check and conversion to 0 if value does not meet req.
+        calculations += 0;
+      } else {
+        calculations += parseInt(list[i]);
+      }
+    }
 
     const finalCalc = calculations;
     this.setState({finalCalc});
