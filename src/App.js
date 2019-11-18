@@ -28,6 +28,12 @@ var calculations = 0;
 *              will display in UI of all negative numbers excluded from the inputted string.
 */
 
+/* Step 5:
+*   Make any value greater than 1000 an invalid number e.g. 2,1001,6 will return 8
+*   Work done: Added a new variable called maxNumAllowed, this variable can also be used later for manipulation features.
+*              The value is this compared against the inputted the list index
+*/
+
 class App extends React.Component {
 
   constructor(props) { //constructor to initialize stats and input
@@ -40,9 +46,10 @@ class App extends React.Component {
 
     const list = value.replaceAll("\\n", ",").split(","); // Simple replaceAll() for any \n to be replaced to ',' and split on ','
     calculations = 0;
+    const maxNumAllowed = 1000;
     const negativeNumber =[];
     for (var i = 0; i < list.length; i++) {
-      if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i])) { // simple value check and conversion to 0 if value does not meet req.
+      if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i]) || parseInt(list[i]) > maxNumAllowed) { // simple value check and conversion to 0 if value does not meet req.
         calculations += 0;
       } else {
         if(parseInt(list[i]) > 0) {
