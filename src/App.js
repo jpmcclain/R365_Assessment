@@ -59,6 +59,12 @@ var calculations = 0;
 *
 */
 
+/* Stretch Goal #1:
+*   Display the formula used to calculate the result e.g. 2,,4,rrrr,1001,6 will return 2+0+4+0+0+6 = 12
+*   work done: Simply added a formula checker to display when user hits calculate. Will only display if user input any values.
+*
+*/
+
 class App extends React.Component {
 
   constructor(props) { //constructor to initialize stats and input
@@ -108,27 +114,40 @@ class App extends React.Component {
 
     }
     console.log(delimList);
-
-    var regex = new RegExp(delimList.join('|') + '|,|\\\\n', 'g')
+    var regex = new RegExp(',|\\\\n', 'g')
+    if(delimList.length > 0){
+      regex = new RegExp(delimList.join('|') + '|,|\\\\n', 'g')
+    }
 
     const list = value.split(regex);
     calculations = 0;
-    let delimErrMsg = this.state.delimErrMsg;
+    this.setState({formulaMsg: false});
+    var formula = "";
     const maxNumAllowed = 1000;
     const negativeNumber = [];
-    if (!delimErrMsg) {
-      for (var i = 0; i < list.length; i++) {
-        if (list[i] === "" || list[i] === "-" || !/^-?\d+(,\d+)*$/.test(list[i]) || parseInt(list[i]) > maxNumAllowed) { // simple value check and conversion to 0 if value does not meet req.
-          calculations += 0;
+
+    for (var i = 0; i < list.length; i++) {
+      if (!/^-?\d+(,\d+)*$/.test(list[i]) || parseInt(list[i]) > maxNumAllowed) { // simple value check and conversion to 0 if value does not meet req.
+        calculations += 0;
+        if(i === 0){
+          formula += 0;
         } else {
-          if (parseInt(list[i]) > 0) {
-            calculations += parseInt(list[i]);
+          formula += " + " + 0;
+        }
+      } else {
+        if (parseInt(list[i]) > 0) {
+          calculations += parseInt(list[i]);
+          if(i === 0){
+            formula += parseInt(list[i]);
           } else {
-            negativeNumber.push(parseInt(list[i]))
+            formula += " + " + parseInt(list[i]);
           }
+        } else {
+          negativeNumber.push(parseInt(list[i]))
         }
       }
     }
+
 
     if (negativeNumber.length > 0) {
       this.setState({showErrMsg: true}); //Error Msg  hide state
@@ -137,6 +156,12 @@ class App extends React.Component {
       this.setState({showErrMsg: false}); //Error Msg  hide state
     }
 
+
+    if (formula.length > 0){
+      formula += " = "+calculations;
+      this.setState({formulaMsg: true});
+      this.setState({formula: formula})
+    }
     const finalCalc = calculations;
     this.setState({finalCalc});
   };
@@ -166,6 +191,10 @@ class App extends React.Component {
                 </div>
                 <input id="output" value={finalCalc} placeholder="0" disabled />
               </div>
+              <div className="form-group row" style={{display: (this.state.formulaMsg ? 'inline-block' : 'none')}}>
+                <p>{this.state.formula}</p>
+              </div>
+
               {/*Error message handling to show or hide based if state condition is met*/}
               <div className="form-group row" >
                 <div className="col-lg-2"></div>
