@@ -51,6 +51,14 @@ var calculations = 0;
 *              than one delimiter is inputted.
 */
 
+/* Step 8:
+*   Support multiple delimiters of any length using the format: //[{delimiter1}][{delimiter2}]...\n{numbers}
+*       example: //[*][!!][r9r]\n11r9r22*hh*33!!44 will return 110
+*       all previous formats should also be supported
+*   work done: Simply removed the single delimiter check and error message display, allowing the using to input more than one custom delimiter.
+*
+*/
+
 class App extends React.Component {
 
   constructor(props) { //constructor to initialize stats and input
@@ -61,28 +69,21 @@ class App extends React.Component {
   onChangeValue = async () => {
     const value = this.myInput.current.value.trim();
 
-    await new Promise(resolve => this.setState({delimErrMsg: false}, () => resolve()))
-
     let delimList = [], delimString = null;
-    if (value.startsWith("//")) {
-        var indexA = value.indexOf("[");
-        if (indexA > -1) {
-            var indexB = value.indexOf("]");
-            var indexC = value.lastIndexOf("]");
-            if (indexB === indexC) {
-                delimString = value.substr(indexA, indexB - 1);
-                var i = 0;
-                while(i < delimString.length) {
-                    delimList.push(delimString.substr(delimString.indexOf("[")+1, delimString.indexOf("]")-1));
-                    delimString = delimString.slice(delimString.indexOf("]")+1, delimString.length);
-                    i++;
-                }
-                await new Promise(resolve => this.setState({delimErrMsg: false}, () => resolve()))
-            } else {
-                await new Promise(resolve => this.setState({delimErrMsg: true}, () => resolve()))
-            }
-            console.log("delimList: " + delimList);
+    /* Checks to see if user is inputting custom delimiters or not */
+    if(value.startsWith("//")){
+      var indexA = value.indexOf("[")
+      if(indexA > -1) {
+        var indexB = value.lastIndexOf("]")
+        delimString = value.substr(indexA, indexB-1);
+        var i = 0;
+        while(i < delimString.length) {
+          delimList.push(delimString.substr(delimString.indexOf("[")+1, delimString.indexOf("]")-1));
+          delimString = delimString.slice(delimString.indexOf("]")+1, delimString.length);
+          i++;
         }
+      }
+      console.log(delimList);
     }
     var delimCounts = {}, delimCharAt, index, delimVal, delimCount;
 
@@ -156,14 +157,6 @@ class App extends React.Component {
                 </div>
                 <input ref={this.myInput} id="add" placeholder="" />
                 <button className="calculate btn btn-primary" type="submit" onClick={this.onChangeValue}><span>Calculate</span></button>
-              </div>
-              {/*Error message handling to show or hide based if state condition is met*/}
-              <div className="form-group row" style={{display: (this.state.delimErrMsg ? 'inline-block' : 'none') , color: 'red' }}>
-                <div>
-                  <span>
-                    More than one Custom Delimiter was set, please only put 1 Custom Delimeter! i.e //[###]\n,1###2,3 = 6
-                  </span>
-                </div>
               </div>
 
               <div className="form-group row">
