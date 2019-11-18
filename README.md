@@ -1,15 +1,3 @@
-# challenge-calculator
-Restaurant365 Code Challenge - String Calculator
-
-## Summary
-Create a calculator that only supports an Add operation given a single formatted string
-
-* html / javascript / react
-* Include unit tests
-* Provide code via a public distributed version control repository i.e. GitHub. Do NOT fork this repo
-* Show each step as a separate commit
-* Efficient code is always important but for this excercise readability and separation of concerns are much more critical
-* Not including one or more of the stretch goals will not affect your overall assessment but implementing them poorly will
 
 ## Requirements
 1. Support a maximum of 2 numbers using a comma delimiter. Throw an exception when more than 2 numbers are provided
