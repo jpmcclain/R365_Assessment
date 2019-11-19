@@ -1,0 +1,53 @@
+The following are test cases provided by each step:
+
+
+	Test 1 -
+		Input  -> 5,tytyt
+		Output -> 5
+		Formula -> 5 + 0 = 5
+		Negative -> N/A
+	Test 2 -
+		Input  -> 1,5000
+		Output -> 5001
+		Formula -> 1 + 5000 = 5001
+		Negative -> N/A
+	Test 3 -
+		Input  -> 555
+		Output -> 555
+		Formula -> 555 = 555
+		Negative -> N/A
+	Test 4 -
+		Input  -> 7,-3
+		Output -> 7
+		Formula -> 7 = 7
+		Negative -> -3
+	Test 5 -
+		Input    -> 7,-3\n8
+		Output   -> 15
+		Formula -> 7 + 8 = 15
+		Negative -> -3
+	Test 6 -
+		Input  -> //[*][!!][r9r]\n11r9r22*hh*33!!44
+		Output -> 110
+		Formula -> 0 + 11 + 22 + 0 + 33 + 44 = 110
+		Negative -> N/A
+	Test 7 -
+		Input  -> //[*][!!][r9r][65]665tt\n11r9r22*hh*33!!44
+		Output -> 116
+		Formula -> 6 + 0 + 11 + 22 + 0 + 33 + 44 = 116
+		Negative -> N/A
+	Test 8 -
+		Input  -> 2,,4,rrrr,1001,6
+		Output -> 12
+		Formula -> 2 + 0 + 4 + 0 + 0 + 6 = 12
+		Negative -> N/A
+	Test 9 -
+		Input  -> //[*][!!][r9r][ ][65]689 65tt\n11r9r22*hh*33!!44
+		Output -> 799
+		Formula -> 689 + 0 + 11 + 22 + 0 + 33 + 44 = 799
+		Negative -> N/A
+	Test 10 -
+		Input  -> //[*][!!][r9r][ ][^^^]-689\n4 ^^^2\n11r9r22*hh*33!!44
+		Output -> 116
+		Formula -> 4 + 0 + 2 + 11 + 22 + 0 + 33 + 44 = 116
+		Negative -> -689
