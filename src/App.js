@@ -73,14 +73,14 @@ class App extends React.Component {
     this.state = {}
   }
   onChangeValue = async () => {
-    const value = this.myInput.current.value.trim();
+    var value = this.myInput.current.value.trim();
 
-    let delimList = [], delimString = null;
+    let delimList = [], delimString = null, indexB=null;
     /* Checks to see if user is inputting custom delimiters or not */
     if(value.startsWith("//")){
       var indexA = value.indexOf("[")
       if(indexA > -1) {
-        var indexB = value.lastIndexOf("]")
+        indexB = value.lastIndexOf("]")
         delimString = value.substr(indexA, indexB-1);
         var i = 0;
         while(i < delimString.length) {
@@ -90,6 +90,8 @@ class App extends React.Component {
         }
       }
       console.log(delimList);
+
+      value = value.slice(indexB+1, value.length);
     }
     var delimCounts = {}, delimCharAt, index, delimVal, delimCount;
 
@@ -131,8 +133,10 @@ class App extends React.Component {
         calculations += 0;
         if(i === 0){
           formula += 0;
-        } else {
+        } else if (formula.length > 0){
           formula += " + " + 0;
+        } else {
+          formula += 0;
         }
       } else {
         if (parseInt(list[i]) > 0) {
