@@ -80,3 +80,9 @@ Completed assignments, each step and stretch goal were a separate commit as requ
 *   work done: Simply removed the single delimiter check and error message display, allowing the using to input more than one custom delimiter.
 *
 */
+
+/* Stretch Goal #1:
+*   Display the formula used to calculate the result e.g. 2,,4,rrrr,1001,6 will return 2+0+4+0+0+6 = 12
+*   work done: Simply added a formula checker to display when user hits calculate. Will only display if user input any values.
+*
+*/
